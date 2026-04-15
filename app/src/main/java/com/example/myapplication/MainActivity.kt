@@ -1,59 +1,70 @@
 package com.example.myapplication
 
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import android.view.Menu
-import android.view.MenuItem
-import com.example.myapplication.databinding.ActivityMainBinding
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 
-class MainActivity : AppCompatActivity() {
-
-    private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var binding: ActivityMainBinding
+class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        setSupportActionBar(binding.toolbar)
-
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        appBarConfiguration = AppBarConfiguration(navController.graph)
-        setupActionBarWithNavController(navController, appBarConfiguration)
-
-        binding.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null)
-                .setAnchorView(R.id.fab).show()
+        setContent {
+            DrinkOrderApp()
         }
     }
+}
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
+@Composable
+fun DrinkOrderApp() {
+    var drink by remember { mutableStateOf("珍珠奶茶") }
+    var sugar by remember { mutableStateOf("全糖") }
+    var ice by remember { mutableStateOf("正常冰") }
+    var result by remember { mutableStateOf("") }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
+    Column(modifier = Modifier.padding(16.dp)) {
+
+        Text("飲料：$drink")
+
+        Row {
+            Button(onClick = { drink = "珍珠奶茶" }) { Text("珍奶") }
+            Button(onClick = { drink = "紅茶" }) { Text("紅茶") }
+            Button(onClick = { drink = "綠茶" }) { Text("綠茶") }
         }
-    }
 
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        return navController.navigateUp(appBarConfiguration)
-                || super.onSupportNavigateUp()
+        Spacer(Modifier.height(10.dp))
+
+        Text("甜度")
+        Row {
+            Button(onClick = { sugar = "全糖" }) { Text("全糖") }
+            Button(onClick = { sugar = "半糖" }) { Text("半糖") }
+            Button(onClick = { sugar = "無糖" }) { Text("無糖") }
+        }
+
+        Spacer(Modifier.height(10.dp))
+
+        Text("冰塊")
+        Row {
+            Button(onClick = { ice = "正常冰" }) { Text("正常冰") }
+            Button(onClick = { ice = "少冰" }) { Text("少冰") }
+            Button(onClick = { ice = "去冰" }) { Text("去冰") }
+        }
+
+        Spacer(Modifier.height(10.dp))
+
+        Button(onClick = {
+            result = "你點的是：$drink + $sugar + $ice"
+        }) {
+            Text("確認訂單")
+        }
+
+        Spacer(Modifier.height(10.dp))
+
+        Text(result)
     }
 }
